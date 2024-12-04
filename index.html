@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enquête Interactive - 4 Étapes</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to right, #74ebd5, #9face6);
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+        h1, h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .question {
+            margin: 20px 0;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .step {
+            display: none;
+        }
+        .step.active {
+            display: block;
+        }
+        .steps-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .steps-indicator::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background-color: #ddd;
+            z-index: 0;
+        }
+        .steps-indicator div {
+            position: relative;
+            z-index: 1;
+            width: 30px;
+            height: 30px;
+            margin: 0 5px;
+            border-radius: 50%;
+            background-color: #ddd;
+            line-height: 30px;
+            text-align: center;
+            color: white;
+            font-size: 14px;
+        }
+        .steps-indicator div.active {
+            background-color: #4CAF50;
+        }
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .navigation button {
+            background: #4CAF50;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            padding: 10px 15px;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        .navigation button:hover {
+            background-color: #45a049;
+        }
+        button[type="submit"] {
+            font-size: 18px;
+            padding: 10px 20px;
+            border-radius: 5px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        button[type="submit"]:hover {
+            background-color: #45a049;
+        }
+        .message {
+            text-align: center;
+            font-weight: bold;
+            margin-top: 20px;
+            color: #4CAF50;
+        }
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Enquête Interactive</h1>
+        <h2>Vos besoins en nettoyage écologique</h2>
+        <form id="surveyForm" action="send_email.php" method="POST">
+            <!-- Steps Indicator -->
+            <div class="steps-indicator">
+                <div class="step-indicator active">1</div>
+                <div class="step-indicator">2</div>
+                <div class="step-indicator">3</div>
+                <div class="step-indicator">4</div>
+            </div>
+
+            <!-- Step 1 -->
+            <div class="step active">
+                <div class="question">
+                    <label for="serviceType">Quels types de services de nettoyage vous intéressent ?</label>
+                    <select id="serviceType" name="serviceType" required>
+                        <option value="" disabled selected>Choisissez une option</option>
+                        <option value="residential">Nettoyage résidentiel</option>
+                        <option value="office">Nettoyage de bureaux</option>
+                        <option value="commercial">Nettoyage commercial</option>
+                        <option value="postConstruction">Nettoyage après construction</option>
+                        <option value="maintenance">Maintenance</option>
+                    </select>
+                </div>
+                <div class="question">
+                    <label>À quelle fréquence auriez-vous besoin de nos services ?</label>
+                    <div>
+                        <label><input type="radio" name="frequency" value="weekly" required> Une fois par semaine</label><br>
+                        <label><input type="radio" name="frequency" value="monthly"> Une fois par mois</label><br>
+                        <label><input type="radio" name="frequency" value="occasionally"> Ponctuellement</label>
+                    </div>
+                </div>
+                <div class="navigation">
+                    <span></span>
+                    <button type="button" onclick="nextStep()">Suivant &#x2192;</button>
+                </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="step">
+                <div class="question">
+                    <label for="budget">Quel budget êtes-vous prêt(e) à investir par prestation ? (en CFA)</label>
+                    <input type="range" id="budget" name="budget" min="10000" max="100000" step="5000" value="50000" oninput="updateBudgetValue(this.value)" required>
+                    <p>Budget choisi : <span id="budgetValue">50 000</span> CFA</p>
+                </div>
+                <div class="question">
+                    <label>Seriez-vous intéressé(e) par des produits ménagers écologiques ?</label>
+                    <div>
+                        <label><input type="radio" name="ecoProducts" value="yes" required> Oui</label><br>
+                        <label><input type="radio" name="ecoProducts" value="maybe"> Peut-être</label><br>
+                        <label><input type="radio" name="ecoProducts" value="no"> Non</label>
+                    </div>
+                </div>
+                <div class="navigation">
+                    <button type="button" onclick="prevStep()">&#x2190; Précédent</button>
+                    <button type="button" onclick="nextStep()">Suivant &#x2192;</button>
+                </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="step">
+                <div class="question">
+                    <label for="comments">Y a-t-il d'autres besoins ou services que vous aimeriez voir proposés ?</label>
+                    <textarea id="comments" name="comments" rows="4" placeholder="Exemple : Nettoyage écologique de tapis" required></textarea>
+                </div>
+                <div class="navigation">
+                    <button type="button" onclick="prevStep()">&#x2190; Précédent</button>
+                    <button type="button" onclick="nextStep()">Suivant &#x2192;</button>
+                </div>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="step">
+                <div class="question">
+                    <label for="firstName">Prénom :</label>
+                    <input type="text" id="firstName" name="firstName" placeholder="Entrez votre prénom">
+                </div>
+                <div class="question">
+                    <label for="lastName">Nom :</label>
+                    <input type="text" id="lastName" name="lastName" placeholder="Entrez votre nom">
+                </div>
+                <div class="question">
+                    <label for="email">Adresse e-mail :</label>
+                    <input type="email" id="email" name="email" placeholder="exemple@domaine.com">
+                </div>
+                <div class="question">
+                    <label for="contact">Numéro de contact :</label>
+                    <input type="tel" id="contact" name="contact" placeholder="Entrez votre numéro de téléphone">
+                </div>
+                <div class="navigation">
+                    <button type="button" onclick="prevStep()">&#x2190; Précédent</button>
+                    <button type="submit">Envoyer &#x2714;</button>
+                </div>
+            </div>
+
+            <p id="error" class="error"></p>
+            <p id="confirmation" class="message"></p>
+        </form>
+    </div>
+
+    <script>
+        let currentStep = 0;
+        const steps = document.querySelectorAll('.step');
+        const indicators = document.querySelectorAll('.step-indicator');
+        const errorElement = document.getElementById('error');
+        const confirmationElement = document.getElementById('confirmation');
+
+        function showStep(step) {
+            steps.forEach((el, index) => {
+                if (index === step) {
+                                        el.classList.add('active');
+                } else {
+                    el.classList.remove('active');
+                }
+                indicators[index]?.classList.toggle('active', index <= step);
+            });
+        }
+
+        function nextStep() {
+            const currentInputs = steps[currentStep].querySelectorAll('input[required], select[required], textarea[required]');
+            for (const input of currentInputs) {
+                if (!input.checkValidity()) {
+                    errorElement.textContent = 'Veuillez remplir tous les champs requis avant de continuer.';
+                    return;
+                }
+            }
+            errorElement.textContent = '';
+            if (currentStep < steps.length - 1) {
+                currentStep++;
+                showStep(currentStep);
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 0) {
+                currentStep--;
+                showStep(currentStep);
+                errorElement.textContent = '';
+            }
+        }
+
+        function updateBudgetValue(value) {
+            document.getElementById('budgetValue').innerText = value;
+        }
+
+        document.getElementById('surveyForm').addEventListener('submit', function (e) {
+            e.preventDefault(); // Empêche le rechargement de la page
+
+            const form = e.target;
+            const formData = new FormData(form);
+
+            fetch(form.action, {
+                method: form.method,
+                body: formData,
+            })
+            .then(response => response.text())
+            .then(result => {
+                if (result.trim() === "success") {
+                    confirmationElement.textContent = 'Merci ! Votre formulaire a été soumis avec succès.';
+                    confirmationElement.style.color = 'green';
+                    form.reset(); // Réinitialise le formulaire après envoi
+                    currentStep = 0;
+                    showStep(currentStep); // Retour à la première étape
+                } else {
+                    errorElement.textContent = 'Une erreur est survenue. Veuillez réessayer.';
+                }
+            })
+            .catch(() => {
+                errorElement.textContent = 'Impossible de soumettre le formulaire. Vérifiez votre connexion.';
+            });
+        });
+
+        // Initialiser la première étape
+        showStep(currentStep);
+    </script>
+</body>
+</html>
+
