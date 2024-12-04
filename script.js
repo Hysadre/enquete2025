@@ -60,6 +60,7 @@ document.getElementById('surveyForm').addEventListener('submit', function (e) {
     })
     .then(response => response.text())
     .then(result => {
+        console.log(result); // Affiche la réponse complète du serveur
         if (result.trim() === "success") {
             confirmationElement.textContent = 'Merci ! Votre formulaire a été soumis avec succès.';
             confirmationElement.style.color = 'green';
@@ -70,10 +71,8 @@ document.getElementById('surveyForm').addEventListener('submit', function (e) {
             errorElement.textContent = 'Une erreur est survenue. Veuillez réessayer.';
         }
     })
-    .catch(() => {
+    .catch(error => {
+        console.error('Erreur:', error); // Affiche les erreurs dans la console
         errorElement.textContent = 'Impossible de soumettre le formulaire. Vérifiez votre connexion.';
     });
 });
-```
-
-Assure-toi que ton serveur renvoie bien `"success"` en réponse à la soumission du formulaire pour que le message de confirmation s'affiche correctement. Si tu as d'autres questions ou des problèmes, n'hésite pas à demander !
