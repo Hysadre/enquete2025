@@ -53,7 +53,6 @@ document.getElementById('surveyForm').addEventListener('submit', function (e) {
 
     const form = e.target;
     const formData = new FormData(form);
-    const confirmationElement = document.getElementById('confirmation');
 
     fetch(form.action, {
         method: form.method,
@@ -75,3 +74,6 @@ document.getElementById('surveyForm').addEventListener('submit', function (e) {
         errorElement.textContent = 'Impossible de soumettre le formulaire. Vérifiez votre connexion.';
     });
 });
+```
+
+Assure-toi que ton serveur renvoie bien `"success"` en réponse à la soumission du formulaire pour que le message de confirmation s'affiche correctement. Si tu as d'autres questions ou des problèmes, n'hésite pas à demander !
